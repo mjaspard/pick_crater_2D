@@ -752,17 +752,17 @@ while i < images_number:
 
 #========================== DRAW FIGURE ================================#
 
+	fig_width = 20
+	fig_height = 10
+
+	if not once_image_run:
+		fig_height = fig.get_figheight()
+		fig_width = fig.get_figwidth()
+
+	print(plt.rcParams.keys())
 
 
-	# plt.rcParams["figure.figsize"] = [7.50, 3.50]
-	plt.rcParams["figure.autolayout"] = True
-
-	# Set up a figure twice as tall as it is wide
-
-	# fig = plt.figure(figsize=plt.figaspect(0.5))
-	# fig = plt.figure(figsize=(8, 6))
-	fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
-	# fig, (ax1, ax2) = plt.subplots(1, 2, gridspec_kw={'width_ratios': [1, 1]})
+	fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(fig_width, fig_height))
 	fig.suptitle('Crater SAR and models')
 
 
@@ -828,16 +828,46 @@ while i < images_number:
 	ax2.text(0, 3500, "P2 from top = {}m".format(h1))
 	# ax2 = plt.gca()
 	# ax2.set_aspect('equal', adjustable='box')
-	once_image_run = False
+	# once_image_run = False
 
 
 	# Manage click on image
 	cid = fig.canvas.mpl_connect('key_press_event', on_key)
 
+
+	# Keep zoom memorisation on image
+	if not once_image_run and not reset_zoom:
+		ax1.set_xlim(lim_x)
+		ax1.set_ylim(lim_y)
+
+
+	# Reset zoom om image
+	if reset_zoom:
+		ax1.set_xlim(lim_x_or)
+		ax1.set_ylim(lim_y_or)
+		reset_zoom = False
+
+	# record otriginal zoom (juste once per image)
+	if reset_zoom_original == True:
+		lim_x_or = ax1.get_xlim()
+		lim_y_or = ax1.get_ylim()
+		reset_zoom_original = False
+
+
+	once_image_run = False
+
+
+
 	# plt.axis('scaled')
 	plt.show()
+
+
+
 	i += 1
 	# plt.clf() 
+
+
+
 
 ## Write the dictionary with all new data to csv output file
 
