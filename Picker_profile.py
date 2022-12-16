@@ -752,8 +752,8 @@ while i < images_number:
 
 #========================== DRAW FIGURE ================================#
 
-	fig_width = 14
-	fig_height = 7
+	fig_width = 18
+	fig_height = 9
 
 	if not once_image_run:
 		fig_height = fig.get_figheight()
@@ -777,8 +777,19 @@ while i < images_number:
 	ax1.plot(crater_topCone_ellipse_x, crater_topCone_ellipse_y, color='orange', alpha=0.8)
 	ax1.plot(crater_bottom_ellipse_x, crater_bottom_ellipse_y, color='magenta', alpha=0.8)
 	ax1.set_aspect(abs(np.sin(np.deg2rad(incidence_angle_deg))) * azimuth_pixel_size/range_pixel_size)
-
-
+	
+	ax1.plot(caldera_edgeN_x,caldera_edgeN_y,marker="o", markeredgecolor="blue", markerfacecolor="blue")
+	ax1.plot(caldera_edgeS_x,caldera_edgeS_y,marker="o", markeredgecolor="blue", markerfacecolor="blue")
+	ax1.plot(crater_outer_edgeN_x,crater_outer_edgeN_y,marker="o", markeredgecolor="skyblue", markerfacecolor="skyblue")
+	ax1.plot(crater_outer_edgeS_x,crater_outer_edgeS_y,marker="o", markeredgecolor="skyblue", markerfacecolor="skyblue")
+	ax1.plot(crater_inner_edgeN_x,crater_inner_edgeN_y,marker="o", markeredgecolor="red", markerfacecolor="red")
+	ax1.plot(crater_inner_edgeS_x,crater_inner_edgeS_y,marker="o", markeredgecolor="red", markerfacecolor="red")
+	ax1.plot(crater_topCone_edgeN_x,crater_topCone_edgeN_y,marker="o", markeredgecolor="orange", markerfacecolor="orange")
+	ax1.plot(crater_topCone_edgeN_x,crater_topCone_edgeS_y,marker="o", markeredgecolor="orange", markerfacecolor="orange")
+	ax1.plot(crater_bottom_edgeN_x,crater_bottom_edgeN_y,marker="o", markeredgecolor="magenta", markerfacecolor="magenta")
+	ax1.plot(crater_bottom_edgeS_x,crater_bottom_edgeS_y,marker="o", markeredgecolor="magenta", markerfacecolor="magenta")
+	
+	
 	# SubPlot profile drawing from external matlab parameters data
 	# ax2 = fig.add_subplot(1, 2, 2)
 	# ax2.set_title("profile")
@@ -826,6 +837,8 @@ while i < images_number:
 	ax2.set_xlabel('[m]')
 	ax2.set_ylabel('[m]')
 	ax2.text(0, 3500, "P2 from top = {}m".format(h1))
+	ax2.text(0, 3450, "Caldera Radius= {}m".format(Jx))
+	ax2.text(0, 3400, "P2 radius = {}m".format(Lx))
 	# ax2 = plt.gca()
 	# ax2.set_aspect('equal', adjustable='box')
 	# once_image_run = False
