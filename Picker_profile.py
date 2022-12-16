@@ -752,14 +752,14 @@ while i < images_number:
 
 #========================== DRAW FIGURE ================================#
 
-	fig_width = 20
-	fig_height = 10
+	fig_width = 14
+	fig_height = 7
 
 	if not once_image_run:
 		fig_height = fig.get_figheight()
 		fig_width = fig.get_figwidth()
 
-	print(plt.rcParams.keys())
+	# print(plt.rcParams.keys())
 
 
 	fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(fig_width, fig_height))
