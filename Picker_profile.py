@@ -566,7 +566,8 @@ while i < images_number:
 	del Raster, Band
 
 	# Open the filter file:
-	Raster_f = gdal.Open(filepath_filter)
+	#Raster_f = gdal.Open(filepath_filter)
+	Raster_f = gdal.Open(filepath)
 	expo_greyscale = 0.3
 
 	Band_f = Raster_f.GetRasterBand(1) # 1 based, for this example only the first
@@ -671,7 +672,7 @@ while i < images_number:
 	Jy = Zvolc
 
 	Kx = -((crater_outer_edgeS_y - crater_outer_edgeN_y)/2)*azimuth_pixel_size
-	a1 = (crater_outer_edgeN_x - caldera_edgeN_x)*range_pixel_size
+	a1 = abs(crater_outer_edgeN_x - caldera_edgeN_x)*range_pixel_size
 	h1 = int(a1 / np.cos(incidence_angle_rad))
 	Ky = Iy - h1
 
@@ -680,8 +681,8 @@ while i < images_number:
 
 
 	# P2
-	a2 = (crater_inner_edgeN_x - caldera_edgeN_x)*range_pixel_size
-	delta_x = (a1 - a2)/np.sin(incidence_angle_rad)
+	a2 = (crater_outer_edgeN_x - crater_inner_edgeN_x)*range_pixel_size
+	delta_x = (a2)/(np.sin(incidence_angle_rad))
 	Cx = delta_x - (((crater_inner_edgeS_y - crater_inner_edgeN_y)/2)*azimuth_pixel_size)
 	Cy = Ky
 
@@ -690,7 +691,7 @@ while i < images_number:
 
 	# <P2
 	Ux = Cx
-	a3 = (crater_topCone_edgeN_x - crater_inner_edgeN_x)*range_pixel_size
+	a3 = abs(crater_topCone_edgeN_x - crater_inner_edgeN_x)*range_pixel_size
 	h2 = a3/np.cos(incidence_angle_rad)
 	Uy = Cy - h2
 
@@ -699,7 +700,7 @@ while i < images_number:
 
 	# Cone
 	Ex = delta_x - (((crater_bottom_edgeN_y - crater_topCone_edgeN_y)/2)*azimuth_pixel_size)
-	a4 = (crater_bottom_edgeN_x - crater_topCone_edgeN_x)*range_pixel_size
+	a4 = abs(crater_bottom_edgeN_x - crater_topCone_edgeN_x)*range_pixel_size
 	h3 = a3/np.cos(incidence_angle_rad)
 	Ey = Uy - h3
 
@@ -839,6 +840,7 @@ while i < images_number:
 	ax2.text(0, 3500, "P2 from top = {}m".format(h1))
 	ax2.text(0, 3450, "Caldera Radius= {}m".format(Jx))
 	ax2.text(0, 3400, "P2 radius = {}m".format(Lx))
+	ax2.text(0, 3550, "delta X = {}m".format(delta_x))
 	# ax2 = plt.gca()
 	# ax2.set_aspect('equal', adjustable='box')
 	# once_image_run = False
