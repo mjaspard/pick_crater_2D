@@ -33,6 +33,7 @@ class MainWindowPickApp(QMainWindow,Ui_MainWindow):
 		self.setupUi(self)
 		self.dataset = {}
 		self.rm_canvas = False
+		self.rm_canvas_simampli = False
 		self.index_live = 0
 		self.pick_SAR_index = 0
 		self.pickSAR_activated = False
@@ -56,9 +57,11 @@ class MainWindowPickApp(QMainWindow,Ui_MainWindow):
 
 
 		# rewrite the size here to work in DT designer easier
-		self.SARImage.setMinimumSize(QSize(800, 800))
-		self.SimAmpPlt.setMinimumSize(QSize(800, 800))
-		
+		# self.SARImage.setMaximumSize(QSize(2000, 2000))
+		self.SimAmpPlt.resize(QSize(100, 100))
+		# self.ProfilePlt.setMinimumSize(QSize(100, 100))
+		# self.ProfilePlt.resize(1000, 500)
+
 
 	# Decorator to bypass function if data not loaded
 	def data_loaded(fonction):
@@ -140,7 +143,8 @@ class MainWindowPickApp(QMainWindow,Ui_MainWindow):
 		# Display crater profile
 		self.initiateProfilePlot()
 		# Display simulated amplitude plot
-		self.initiateSimAmpliPlot()
+		# self.initiateSimAmpliPlot()
+		self.pushButton_update_simamp.setChecked(True)
 		# Set variable tp allow removing canvas after first creation
 		self.rm_canvas = True
 		# Re-initialise picking ellipse counter
@@ -312,12 +316,13 @@ class MainWindowPickApp(QMainWindow,Ui_MainWindow):
 
 			# Close current figure if it exists:
 			print(" initiate amplitude simulation plot")
-			if self.rm_canvas:
+			if self.rm_canvas_simampli:
 				self.canvas_sim_ampli.close()
 				print("-- remove canvas profile")
 				# self.canvas_profile.close()
 
 
+			self.rm_canvas_simampli = True
 			# Get matplotlib figure objetct and min/max value of amplitude image
 			self.canvas_sim_ampli = getSimAmpliFig(self)
 

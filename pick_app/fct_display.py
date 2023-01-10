@@ -100,7 +100,9 @@ def getSARFig(self):
 
     expo_greyscale = dataset['expo_greyscale'][i] 
 
-    
+   
+
+
     # print("!!! Coordinate caldera_N = ", dataset['crater_outer_edgeN_x'][i])
     # print("index i = ", i)
 
@@ -212,9 +214,9 @@ def getSARFig(self):
         # self.ax.plot(crater_bottom_edgeS_x,crater_bottom_edgeS_y,marker="o", markeredgecolor="magenta", markerfacecolor="magenta")
     
     # restore previous zoom value
-    print("self.SAR_zoom = ", self.SAR_zoom)
+    # print("self.SAR_zoom = ", self.SAR_zoom)
     if self.SAR_zoom:
-        print("set zoom value :", self.lim_x, self.lim_y)
+        # print("set zoom value :", self.lim_x, self.lim_y)
         self.ax.set_xlim(self.lim_x)
         self.ax.set_ylim(self.lim_y)
 
@@ -297,6 +299,14 @@ def getProfileFig(self):
     ####### Draw picked topography ###########
 
 
+    # Manage to know if we are in an ascebding or descenfing SAR image
+    if (float(incidence_angle_deg) < 0):
+        self.current_orbit_asc = True
+        self.current_orbit_desc = False
+    else:
+        self.current_orbit_asc = False
+        self.current_orbit_desc = True
+
     # >=P2
     Ix = int(caldera_edgeN_y*azimuth_pixel_size)
     Iy = Zvolc
@@ -321,13 +331,17 @@ def getProfileFig(self):
     # P2
     a2 = (crater_outer_edgeN_x - crater_inner_edgeN_x)*range_pixel_size
     delta_x = (a2)/(np.sin(incidence_angle_rad))
+    if self.current_orbit_desc:
+        delta_x = -delta_x
+        print("Descending image --> delta_x reveresed")
+    print("Profile creation, delta_x = ", delta_x)
     diameter_crater = (int(crater_inner_edgeS_y) - int(crater_inner_edgeN_y)) * azimuth_pixel_size
 
 
-    Cx = (delta_ref_x - delta_x) - (diameter_crater/2)
+    Cx = (delta_ref_x + delta_x) - (diameter_crater/2)
     Cy = Ky
 
-    Dx = (delta_ref_x - delta_x) + (diameter_crater/2)
+    Dx = (delta_ref_x + delta_x) + (diameter_crater/2)
     Dy = Ky
 
     # <P2
@@ -345,12 +359,12 @@ def getProfileFig(self):
     h3 = int(a4/np.cos(incidence_angle_rad))
     Ey = Uy - h3
     diameter_bottom = (int(crater_bottom_edgeS_y) - int(crater_bottom_edgeN_y)) * azimuth_pixel_size
-    Ex = (delta_ref_x - delta_x) - (diameter_bottom/2)
-    Fx = (delta_ref_x - delta_x) + (diameter_bottom/2)
+    Ex = (delta_ref_x + delta_x) - (diameter_bottom/2)
+    Fx = (delta_ref_x + delta_x) + (diameter_bottom/2)
     Fy = Ey
 
 
-    print("Ix = ", Ix)
+    # print("Ix = ", Ix)
 
     # Centering all X axis points with the middle of the caldera as reference.
     Ix -= delta_ref_x 
@@ -369,6 +383,13 @@ def getProfileFig(self):
     self.Iy = Iy
     self.Jx = Jx
     self.Jy = Jy
+
+
+
+
+    # Need to make global this value to use to scale back data in function _update_plot()
+    self.delta_ref_x = delta_ref_x
+
 
 
     # Create array to draw profile
@@ -408,7 +429,9 @@ def getProfileFig(self):
 
     X_profile_all = [-2500, Ix, Kx, Cx, Ux, Ex, Fx, Vx, Dx, Lx, Jx, 2500]
     Y_profile_all = [2500, Iy, Ky, Cy, Uy, Ey, Fy, Vy, Dy, Ly, Jy, 2500]
-    
+   
+    print("X_profile_all = Ix, Kx, Cx, Ux, Ex, Fx, Vx, Dx, Lx, Jx") 
+    print("X_profile_all = ",Ix, Kx, Cx, Ux, Ex, Fx, Vx, Dx, Lx, Jx) 
    
     #========================== DRAW FIGURE ================================#
 
@@ -469,15 +492,19 @@ def getProfileFig(self):
     self.ax1.plot(Fx,Fy,marker="o", markeredgecolor="magenta", markerfacecolor="magenta")
     self.ax1.plot(X_profile_7, Y_profile_7, color='magenta',linestyle='dashed', linewidth=1)
 
-
+    # self.ax1.axis('equal')
     self.ax1.set_xlim(-1000, 1000)  # self.SAR_width = number of pixels in azimut direction for this image
     self.ax1.set_ylim(2200, 3600)
     self.ax1.set_xlabel('[m] (range dircetion)')
     self.ax1.set_ylabel('[m]')
-    self.ax1.text(0, 3500, "P2 from top = {}m".format(h1))
-    self.ax1.text(0, 3450, "Caldera Radius= {}m".format(Jx))
-    self.ax1.text(0, 3400, "P2 radius = {}m".format(Lx))
-    self.ax1.text(0, 3550, "delta X = {}m".format(delta_x))
+    self.ax1.text(250, 2700, "delta X = {}m".format(delta_x))
+    self.ax1.text(250, 2650, "P2 from top = {}m".format(h1))
+    self.ax1.text(250, 2600, "Caldera Radius= {}m".format(Jx))
+    self.ax1.text(250, 2550, "P2 radius = {}m".format(Lx))
+    self.ax1.text(250, 2500, "Crat radius = {}m".format(diameter_crater/2))
+    self.ax1.text(250, 2450, "Bottom from P2 = {}m".format(Cy - Ey))
+    self.ax1.text(250, 2400, "Bottom radius = {}m".format(diameter_bottom/2))
+
   
 
 
@@ -493,7 +520,7 @@ def getProfileFig(self):
 
 
 
-    self.ax1.set_aspect(abs(np.sin(np.deg2rad(incidence_angle_deg))) * azimuth_pixel_size/range_pixel_size)
+    # self.ax1.set_aspect(abs(np.sin(np.deg2rad(incidence_angle_deg))) * azimuth_pixel_size/range_pixel_size)
 
     # Canvas creation
     self.canvas_profile = FigureCanvas(self.figure_profile)
@@ -560,7 +587,8 @@ def getSimAmpliFig(self):
     crater_bottom_edgeS_y = dataset['crater_bottom_edgeS_y'][i]
 
 
- 
+
+
 
     ####### Draw picked topography ###########
 
@@ -590,10 +618,10 @@ def getSimAmpliFig(self):
     diameter_crater = (int(crater_inner_edgeS_y) - int(crater_inner_edgeN_y)) * azimuth_pixel_size
 
 
-    Cx = (delta_ref_x - delta_x) - (diameter_crater/2)
+    Cx = (delta_ref_x + delta_x) - (diameter_crater/2)
     Cy = Ky
 
-    Dx = (delta_ref_x - delta_x) + (diameter_crater/2)
+    Dx = (delta_ref_x + delta_x) + (diameter_crater/2)
     Dy = Ky
 
     # <P2
@@ -611,8 +639,8 @@ def getSimAmpliFig(self):
     h3 = int(a4/np.cos(incidence_angle_rad))
     Ey = Uy - h3
     diameter_bottom = (int(crater_bottom_edgeS_y) - int(crater_bottom_edgeN_y)) * azimuth_pixel_size
-    Ex = (delta_ref_x - delta_x) - (diameter_bottom/2)
-    Fx = (delta_ref_x - delta_x) + (diameter_bottom/2)
+    Ex = (delta_ref_x + delta_x) - (diameter_bottom/2)
+    Fx = (delta_ref_x + delta_x) + (diameter_bottom/2)
     Fy = Ey
 
 
@@ -639,10 +667,6 @@ def getSimAmpliFig(self):
 
 
 
-
-
-    # Need to make global this value to use to scale back data in function _update_plot()
-    self.delta_ref_x = delta_ref_x
 
 
     # Create array to draw profile
@@ -721,32 +745,32 @@ def getSimAmpliFig(self):
     rayon_inner = diameter_crater/2
     # get_perforated_surface(x1, y1,x2, y2, r1, r2, z, n1, n2)
     # print("get_perforated_surface: ",0, 0, delta_x, 0, Kx, rayon_inner, Ky, n11, n21)
-    X2, Y2, Z2 = get_perforated_surface(0, 0, -delta_x, delta_az, Kx, rayon_inner , Ky, n11, n21)
+    X2, Y2, Z2 = get_perforated_surface(0, 0, delta_x, delta_az, Kx, rayon_inner , Ky, n11, n21)
     self.ax2.scatter(X2, Y2, Z2, color='grey', linewidth=1, alpha=0.3)
 
     # Draw P2 inner ring (lake limit)
-    Xc, Yc, Zc = data_for_cylinder_along_z(-delta_x, delta_az, rayon_inner, Cy)
+    Xc, Yc, Zc = data_for_cylinder_along_z(delta_x, delta_az, rayon_inner, Cy)
     self.ax2.plot(Xc, Yc, Zc, color='red', linewidth=3)
 
     print("delta_x in 3D view = ", delta_x)
     # Draw cone from P2 level to vertical limit inside the crater
-    X3, Y3, Z3= get_cone_data(-delta_x, delta_az, rayon_inner, rayon_inner, Cy, Uy, n12, n22)
+    X3, Y3, Z3= get_cone_data(delta_x, delta_az, rayon_inner, rayon_inner, Cy, Uy, n12, n22)
     self.ax2.plot_wireframe(X3, Y3, Z3, color='grey', alpha=0.3)
     # Draw middle bottom crater ring
-    Xc, Yc, Zc = data_for_cylinder_along_z(-delta_x, delta_az, rayon_inner, Uy)
+    Xc, Yc, Zc = data_for_cylinder_along_z(delta_x, delta_az, rayon_inner, Uy)
     self.ax2.plot(Xc, Yc, Zc, color='orange', linewidth=3)
 
     # Draw cone from middle of crater to bottom of crater
     rayon_inner_bottom = diameter_bottom/2
-    X2, Y2, Z2= get_cone_data(-delta_x, delta_az, rayon_inner, rayon_inner_bottom , Uy, Ey, n12, n22)
+    X2, Y2, Z2= get_cone_data(delta_x, delta_az, rayon_inner, rayon_inner_bottom , Uy, Ey, n12, n22)
     self.ax2.plot_wireframe(X2, Y2, Z2, color='grey', alpha=0.3)
 
 
     # Draw bottom surface
-    X2, Y2, Z2= get_cone_data(-delta_x, delta_az, rayon_inner_bottom, 1, Ey, Ey, n12, n22)
+    X2, Y2, Z2= get_cone_data(delta_x, delta_az, rayon_inner_bottom, 1, Ey, Ey, n12, n22)
     self.ax2.plot_wireframe(X2, Y2, Z2, color='grey', alpha=0.3)
     # Draw Bottom ring
-    Xc, Yc, Zc = data_for_cylinder_along_z(-delta_x, delta_az, rayon_inner_bottom, Ey)
+    Xc, Yc, Zc = data_for_cylinder_along_z(delta_x, delta_az, rayon_inner_bottom, Ey)
     self.ax2.plot(Xc, Yc, Zc, color='magenta', linewidth=3)
 
     self.ax2.set_xlim(-1000, 1000)
@@ -907,7 +931,7 @@ def on_key(event, self):
 
 def onclick(event, self):
     """ Function that will call the pickSARManagement function when clicking on the amplitude image"""
-    print("Mouse button is clicked: ", event.button)
+    # print("Mouse button is clicked: ", event.button)
     # Check if right clic
     if re.search('MouseButton.RIGHT', str(event.button)):
         # Picking options mest be activated
@@ -916,11 +940,11 @@ def onclick(event, self):
             if event.xdata != None and event.ydata != None:
 
                 # record zoom value if anything pressed
-                print("coordinate mouse : ", event.xdata, event.ydata)
+                # print("coordinate mouse : ", event.xdata, event.ydata)
                 self.lim_x = self.ax.get_xlim()
                 self.lim_y = self.ax.get_ylim()
-                print("roriginal zoom value :", self.lim_x_or, self.lim_y_or)
-                print("record zoom value :", self.lim_x, self.lim_y)
+                # print("roriginal zoom value :", self.lim_x_or, self.lim_y_or)
+                # print("record zoom value :", self.lim_x, self.lim_y)
                 self.SAR_zoom = True
 
 
@@ -1000,8 +1024,8 @@ def _update_plot(self):
 
 
 
-    print("_update_plot")
-    print("Kx =", Kx)
+    # print("_update_plot")
+    # print("Kx =", Kx)
 
 
     # dataset['caldera_edgeN_y'][i] = Ix/azimuth_pixel_size
@@ -1014,20 +1038,31 @@ def _update_plot(self):
 
     h1 = Iy - Ky
     a1 = h1*np.cos(incidence_angle_rad)
-
+    if self.current_orbit_desc:
+        a1 = -abs(a1)
+    diameter_P2 = (Lx - Kx)/azimuth_pixel_size
+    center_y_mem = ((dataset['crater_outer_edgeS_y'][i] - dataset['crater_outer_edgeN_y'][i])/2) + dataset['crater_outer_edgeN_y'][i]
+    # print("diameter_P2 = ", diameter_P2)
+    # print("center_y_mem = ", center_y_mem)
     dataset['crater_outer_edgeN_x'][i] = (a1/range_pixel_size) + dataset['caldera_edgeN_x'][i] 
-    dataset['crater_outer_edgeN_y'][i] = Kx/azimuth_pixel_size
-    dataset['crater_outer_edgeS_x'][i] = dataset['crater_outer_edgeN_x'][i]
-    dataset['crater_outer_edgeS_y'][i] = Lx/azimuth_pixel_size
+    dataset['crater_outer_edgeN_y'][i] = center_y_mem - (diameter_P2/2)
+    # dataset['crater_outer_edgeS_x'][i] = dataset['crater_outer_edgeN_x'][i]
+    # dataset['crater_outer_edgeS_y'][i] = center_y_mem - (diameter_P2/2)
 
     # Crater inner ellipse (need to record previous center position for crater)
     caldera_center = ((Jx - Ix)/2) + Ix
     crater_center = ((Dx - Cx)/2) + Cx
-    delta_x = caldera_center - crater_center
+    if self.current_orbit_desc:
+        delta_x = caldera_center - crater_center
+    else:
+        delta_x = crater_center - caldera_center
     a2 = delta_x*np.sin(incidence_angle_rad)
+    # if self.current_orbit_desc:
+    #     a2 = -abs(a2)
     diameter_crater = (Dx - Cx)/azimuth_pixel_size
     center_y_mem = ((dataset['crater_inner_edgeS_y'][i] - dataset['crater_inner_edgeN_y'][i])/2) + dataset['crater_inner_edgeN_y'][i]
-
+    # print("diameter_crater = ", diameter_crater)
+    # print("center_y_mem = ", center_y_mem)
     dataset['crater_inner_edgeN_x'][i] = dataset['crater_outer_edgeN_x'][i] - (a2/range_pixel_size)
     dataset['crater_inner_edgeN_y'][i] = center_y_mem - (diameter_crater/2)
     dataset['crater_inner_edgeS_x'][i] = dataset['crater_inner_edgeN_x'][i] 
@@ -1035,7 +1070,9 @@ def _update_plot(self):
 
     # Middle crater
     h2 = Cy - Uy
-    a3 = h2 * np.cos(incidence_angle_rad) 
+    a3 = h2 * np.cos(incidence_angle_rad)
+    if self.current_orbit_desc:
+        a3 = -abs(a3) 
     dataset['crater_topCone_edgeN_x'][i] = (a3 / range_pixel_size) + dataset['crater_inner_edgeN_x'][i]
     dataset['crater_topCone_edgeN_y'][i] =dataset['crater_inner_edgeN_y'][i]
     dataset['crater_topCone_edgeS_x'][i] = dataset['crater_topCone_edgeN_x'][i] 
@@ -1044,6 +1081,8 @@ def _update_plot(self):
     # Bottom crater
     h3 = Uy -Ey
     a4 = h3 * np.cos(incidence_angle_rad)
+    if self.current_orbit_desc:
+        a4 = -abs(a4)
     diameter_crater_bottom = (Fx - Ex)/azimuth_pixel_size
     dataset['crater_bottom_edgeN_x'][i] = (a4 / range_pixel_size) + dataset['crater_topCone_edgeN_x'][i]
     dataset['crater_bottom_edgeN_y'][i] = center_y_mem - (diameter_crater_bottom/2)
@@ -1080,8 +1119,8 @@ def _update_plot(self):
     # h3 = int(a4/np.cos(incidence_angle_rad))
     # Ey = Uy - h3
     # diameter_bottom = (int(crater_bottom_edgeS_y) - int(crater_bottom_edgeN_y)) * azimuth_pixel_size
-    # Ex = (delta_ref_x - delta_x) - (diameter_bottom/2)
-    # Fx = (delta_ref_x - delta_x) + (diameter_bottom/2)
+    # Ex = (delta_ref_x + delta_x) - (diameter_bottom/2)
+    # Fx = (delta_ref_x + delta_x) + (diameter_bottom/2)
     # Fy = Ey
 
     # Manage grey shape (TO BE REMOVED)
@@ -1141,7 +1180,7 @@ def _on_click(event, self):
     # left click
     if event.button == 1 and event.inaxes in [self.ax1]:
         key, point = _find_neighbor_point(self, event)
-        print("on_click, point = ", key, point)
+        # print("on_click, point = ", key, point)
         if point:
             self._dragging_point = point
             self._dragging_key = key

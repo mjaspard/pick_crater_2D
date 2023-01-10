@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2458</width>
-    <height>1029</height>
+    <width>1887</width>
+    <height>801</height>
    </rect>
   </property>
   <property name="font">
@@ -27,7 +27,7 @@
      <rect>
       <x>1</x>
       <y>0</y>
-      <width>971</width>
+      <width>761</width>
       <height>990</height>
      </rect>
     </property>
@@ -151,8 +151,8 @@
         <widget class="QWidget" name="SARImage" native="true">
          <property name="minimumSize">
           <size>
-           <width>800</width>
-           <height>800</height>
+           <width>500</width>
+           <height>500</height>
           </size>
          </property>
          <layout class="QVBoxLayout" name="SARLayout"/>
@@ -573,7 +573,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>2458</width>
+     <width>1887</width>
      <height>21</height>
     </rect>
    </property>
@@ -607,8 +607,8 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>700</width>
-     <height>700</height>
+     <width>500</width>
+     <height>520</height>
     </size>
    </property>
    <property name="floating">
@@ -630,36 +630,36 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>652</width>
-       <height>652</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_6">
-      <item>
-       <widget class="QWidget" name="ProfilePlt" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>650</width>
-          <height>650</height>
-         </size>
-        </property>
-        <layout class="QVBoxLayout" name="Profile_Layout"/>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+    <property name="minimumSize">
+     <size>
+      <width>500</width>
+      <height>500</height>
+     </size>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_9">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QWidget" name="ProfilePlt" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>450</width>
+           <height>450</height>
+          </size>
+         </property>
+         <layout class="QVBoxLayout" name="Profile_Layout"/>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_SimAmp">
    <property name="minimumSize">
     <size>
-     <width>700</width>
-     <height>800</height>
+     <width>500</width>
+     <height>738</height>
     </size>
    </property>
    <property name="allowedAreas">
@@ -674,8 +674,8 @@
    <widget class="QWidget" name="dockWidgetContents_3">
     <property name="maximumSize">
      <size>
-      <width>800</width>
-      <height>900</height>
+      <width>2000</width>
+      <height>1500</height>
      </size>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -687,8 +687,8 @@
           <widget class="QWidget" name="SimAmpPlt" native="true">
            <property name="minimumSize">
             <size>
-             <width>650</width>
-             <height>650</height>
+             <width>450</width>
+             <height>450</height>
             </size>
            </property>
            <layout class="QVBoxLayout" name="SimAmp_Layout">
