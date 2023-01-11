@@ -428,8 +428,8 @@ def getProfileFig(self):
     X_profile_all = [-2500, Ix, Kx, Cx, Ux, Ex, Fx, Vx, Dx, Lx, Jx, 2500]
     Y_profile_all = [2500, Iy, Ky, Cy, Uy, Ey, Fy, Vy, Dy, Ly, Jy, 2500]
   
-    X_profile_clickable = [Kx, Ux, Ex, Fx, Vx, Lx]
-    Y_profile_clickable = [Ky, Uy, Ey, Fy, Vy, Ly]
+    X_profile_clickable = [Ix, Kx, Ux, Ex, Fx, Vx, Lx, Jx]
+    Y_profile_clickable = [Iy, Ky, Uy, Ey, Fy, Vy, Ly, Jy]
 
 
     print("X_profile_all = Ix, Kx, Cx, Ux, Ex, Fx, Vx, Dx, Lx, Jx") 
@@ -991,12 +991,12 @@ def _update_plot(self):
         # Caldera ellipse
 
     # Get coordinate of draggable profile
-    Kx, Ky = list(self._points[0].items())[0]
-    Ux, Uy = list(self._points[1].items())[0]
-    Ex, Ey = list(self._points[2].items())[0]
-    Fx, Fy = list(self._points[3].items())[0]
-    Vx, Vy = list(self._points[4].items())[0]
-    Lx, Ly = list(self._points[5].items())[0]
+    Kx, Ky = list(self._points[1].items())[0]
+    Ux, Uy = list(self._points[2].items())[0]
+    Ex, Ey = list(self._points[3].items())[0]
+    Fx, Fy = list(self._points[4].items())[0]
+    Vx, Vy = list(self._points[5].items())[0]
+    Lx, Ly = list(self._points[6].items())[0]
 
 
 
