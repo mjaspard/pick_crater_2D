@@ -1,5 +1,5 @@
 
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QSlider
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QSlider, QCheckBox
 from Ui_main_window_pickapp import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot, QSize
 from Loader import Loader
@@ -58,7 +58,8 @@ class MainWindowPickApp(QMainWindow,Ui_MainWindow):
 
 		# rewrite the size here to work in DT designer easier
 		# self.SARImage.setMaximumSize(QSize(2000, 2000))
-		self.SimAmpPlt.resize(QSize(100, 100))
+		self.dockWidget_SimAmp.resize(QSize(700, 700))
+
 		# self.ProfilePlt.setMinimumSize(QSize(100, 100))
 		# self.ProfilePlt.resize(1000, 500)
 
@@ -143,8 +144,10 @@ class MainWindowPickApp(QMainWindow,Ui_MainWindow):
 		# Display crater profile
 		self.initiateProfilePlot()
 		# Display simulated amplitude plot
-		# self.initiateSimAmpliPlot()
-		self.pushButton_update_simamp.setChecked(True)
+		if self.checkBox_auto_update.isChecked():
+			self.initiateSimAmpliPlot()
+		else:
+			self.pushButton_update_simamp.setChecked(True)
 		# Set variable tp allow removing canvas after first creation
 		self.rm_canvas = True
 		# Re-initialise picking ellipse counter
@@ -334,11 +337,5 @@ class MainWindowPickApp(QMainWindow,Ui_MainWindow):
 			# Draw the figure
 			self.canvas_sim_ampli.draw()
 
-	def updateSimAmp(self):
-		""" This function will update the contain of the left docker (simulated amplitude, 3d view or profile view)"""
-		self.canvas_sim_ampli = getSimAmpliFig(self)
-		# Add figure to layout properties of ProfilePlt Widget
-		self.SimAmp_Layout.addWidget(self.canvas_sim_ampli)
-		# Draw the figure
-		self.canvas_sim_ampli.draw()
+
 

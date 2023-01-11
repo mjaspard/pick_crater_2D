@@ -333,8 +333,6 @@ def getProfileFig(self):
     delta_x = (a2)/(np.sin(incidence_angle_rad))
     if self.current_orbit_desc:
         delta_x = -delta_x
-        print("Descending image --> delta_x reveresed")
-    print("Profile creation, delta_x = ", delta_x)
     diameter_crater = (int(crater_inner_edgeS_y) - int(crater_inner_edgeN_y)) * azimuth_pixel_size
 
 
@@ -429,7 +427,11 @@ def getProfileFig(self):
 
     X_profile_all = [-2500, Ix, Kx, Cx, Ux, Ex, Fx, Vx, Dx, Lx, Jx, 2500]
     Y_profile_all = [2500, Iy, Ky, Cy, Uy, Ey, Fy, Vy, Dy, Ly, Jy, 2500]
-   
+  
+    X_profile_clickable = [Kx, Ux, Ex, Fx, Vx, Lx]
+    Y_profile_clickable = [Ky, Uy, Ey, Fy, Vy, Ly]
+
+
     print("X_profile_all = Ix, Kx, Cx, Ux, Ex, Fx, Vx, Dx, Lx, Jx") 
     print("X_profile_all = ",Ix, Kx, Cx, Ux, Ex, Fx, Vx, Dx, Lx, Jx) 
    
@@ -451,9 +453,9 @@ def getProfileFig(self):
     self.ax1.add_line(self._line)
     # self._line, = self.ax1.plot(X_profile_all ,Y_profile_all ,marker="o", markeredgecolor="green", markerfacecolor="green")
     # Fill variable _points to manage draggable points
-    for idx in range(len(X_profile_all)):
+    for idx in range(len(X_profile_clickable)):
         self._points[idx] = {}
-        self._points[idx][X_profile_all[idx]] = Y_profile_all[idx]
+        self._points[idx][X_profile_clickable[idx]] = Y_profile_clickable[idx]
 
     # Set fixed data on profile with color related to ellipse on amplitude image
     self.ax1.set_title("profile from picking points")
@@ -464,9 +466,9 @@ def getProfileFig(self):
     self.ax1.plot(X_profile_11, Y_profile_11, color='black')
 
     # Crater outer = P2
-    self.ax1.plot(Lx,Ly,marker="o", markeredgecolor="skyblue", markerfacecolor="skyblue")
+    self.ax1.plot(Lx,Ly,marker="o", markeredgecolor="skyblue", markerfacecolor="white")
     self.ax1.plot(X_profile_2, Y_profile_2, color='skyblue')
-    self.ax1.plot(Kx,Ky,marker="o", markeredgecolor="skyblue", markerfacecolor="skyblue")
+    self.ax1.plot(Kx,Ky,marker="o", markeredgecolor="skyblue", markerfacecolor="white")
     self.ax1.plot(X_profile_22, Y_profile_22, color='skyblue')
 
     # Crater at top position (level P2)
@@ -479,8 +481,8 @@ def getProfileFig(self):
     self.ax1.plot(X_profile_44, Y_profile_44, color='black')
 
     # Crater at middle position (Between bottom and top)
-    self.ax1.plot(Ux,Uy,marker="o", markeredgecolor="orange", markerfacecolor="orange")
-    self.ax1.plot(Vx,Vy,marker="o", markeredgecolor="orange", markerfacecolor="orange")
+    self.ax1.plot(Ux,Uy,marker="o", markeredgecolor="orange", markerfacecolor="white")
+    self.ax1.plot(Vx,Vy,marker="o", markeredgecolor="orange", markerfacecolor="white")
     self.ax1.plot(X_profile_5, Y_profile_5, color='orange',linestyle='dashed', linewidth=1)
 
 
@@ -488,8 +490,8 @@ def getProfileFig(self):
     self.ax1.plot(X_profile_66, Y_profile_66, color='black')
 
     # Crater at bottom
-    self.ax1.plot(Ex,Ey,marker="o", markeredgecolor="magenta", markerfacecolor="magenta")
-    self.ax1.plot(Fx,Fy,marker="o", markeredgecolor="magenta", markerfacecolor="magenta")
+    self.ax1.plot(Ex,Ey,marker="o", markeredgecolor="magenta", markerfacecolor="white")
+    self.ax1.plot(Fx,Fy,marker="o", markeredgecolor="magenta", markerfacecolor="white")
     self.ax1.plot(X_profile_7, Y_profile_7, color='magenta',linestyle='dashed', linewidth=1)
 
     # self.ax1.axis('equal')
@@ -497,13 +499,13 @@ def getProfileFig(self):
     self.ax1.set_ylim(2200, 3600)
     self.ax1.set_xlabel('[m] (range dircetion)')
     self.ax1.set_ylabel('[m]')
-    self.ax1.text(250, 2700, "delta X = {}m".format(delta_x))
-    self.ax1.text(250, 2650, "P2 from top = {}m".format(h1))
-    self.ax1.text(250, 2600, "Caldera Radius= {}m".format(Jx))
-    self.ax1.text(250, 2550, "P2 radius = {}m".format(Lx))
-    self.ax1.text(250, 2500, "Crat radius = {}m".format(diameter_crater/2))
-    self.ax1.text(250, 2450, "Bottom from P2 = {}m".format(Cy - Ey))
-    self.ax1.text(250, 2400, "Bottom radius = {}m".format(diameter_bottom/2))
+    self.ax1.text(-250, 2500, "delta X = {}m".format(delta_x))
+    self.ax1.text(-250, 2450, "P2 from top = {}m".format(h1))
+    self.ax1.text(-250, 2400, "Caldera Radius= {}m".format(Jx))
+    self.ax1.text(-250, 2350, "P2 radius = {}m".format(Lx))
+    self.ax1.text(-250, 2300, "Crat radius = {}m".format(diameter_crater/2))
+    self.ax1.text(-250, 2250, "Bottom from P2 = {}m".format(Cy - Ey))
+    self.ax1.text(-250, 2210, "Bottom radius = {}m".format(diameter_bottom/2))
 
   
 
@@ -590,14 +592,18 @@ def getSimAmpliFig(self):
 
 
 
-    ####### Draw picked topography ###########
+ ####### Draw picked topography ###########
 
-  # >=P2
+
+
+
+    # >=P2
     Ix = int(caldera_edgeN_y*azimuth_pixel_size)
     Iy = Zvolc
 
     Jx = int(caldera_edgeS_y*azimuth_pixel_size)
     Jy = Zvolc
+
 
     delta_ref_x = Ix + ((Jx - Ix)/2)
 
@@ -615,6 +621,8 @@ def getSimAmpliFig(self):
     # P2
     a2 = (crater_outer_edgeN_x - crater_inner_edgeN_x)*range_pixel_size
     delta_x = (a2)/(np.sin(incidence_angle_rad))
+    if self.current_orbit_desc:
+        delta_x = -delta_x
     diameter_crater = (int(crater_inner_edgeS_y) - int(crater_inner_edgeN_y)) * azimuth_pixel_size
 
 
@@ -642,7 +650,6 @@ def getSimAmpliFig(self):
     Ex = (delta_ref_x + delta_x) - (diameter_bottom/2)
     Fx = (delta_ref_x + delta_x) + (diameter_bottom/2)
     Fy = Ey
-
 
 # Add informations about azimut position, which is not needed in profile !
 
@@ -845,7 +852,7 @@ def getSimAmpliFig(self):
 
 
 
-    self.figure_sim_ampli.tight_layout()
+    # self.figure_sim_ampli.tight_layout()
     # Canvas creation
     self.canvas_sim_ampli = FigureCanvas(self.figure_sim_ampli)
 
@@ -984,17 +991,13 @@ def _update_plot(self):
         # Caldera ellipse
 
     # Get coordinate of draggable profile
-    Zvolc_x, Zvolc_y = list(self._points[0].items())[0]
-    Ix, Iy = list(self._points[1].items())[0]
-    Kx, Ky = list(self._points[2].items())[0]
-    Cx, Cy = list(self._points[3].items())[0]
-    Ux, Uy = list(self._points[4].items())[0]
-    Ex, Ey = list(self._points[5].items())[0]
-    Fx, Fy = list(self._points[6].items())[0]
-    Vx, Vy = list(self._points[7].items())[0]
-    Dx, Dy = list(self._points[8].items())[0]
-    Lx, Ly = list(self._points[9].items())[0]
-    Jx, Jy = list(self._points[10].items())[0]
+    Kx, Ky = list(self._points[0].items())[0]
+    Ux, Uy = list(self._points[1].items())[0]
+    Ex, Ey = list(self._points[2].items())[0]
+    Fx, Fy = list(self._points[3].items())[0]
+    Vx, Vy = list(self._points[4].items())[0]
+    Lx, Ly = list(self._points[5].items())[0]
+
 
 
     # rewrite original caldera point because we don't want them to be moved manually by profile (only moved by picking amplitude image)
@@ -1002,6 +1005,12 @@ def _update_plot(self):
     Iy = self.Iy
     Jx = self.Jx
     Jy = self.Jy
+
+    Cx = Ux           # if both point are together, Ux is on top of Cx, so we decide to play with Dx (They must be the same in the end)
+    Dx = Vx
+
+    Cy = Ky
+    Dy = Ly
 
 
 
@@ -1018,14 +1027,6 @@ def _update_plot(self):
     Ex += delta_ref_x
     Fx += delta_ref_x
 
-
-
-
-
-
-
-    # print("_update_plot")
-    # print("Kx =", Kx)
 
 
     # dataset['caldera_edgeN_y'][i] = Ix/azimuth_pixel_size
@@ -1091,37 +1092,6 @@ def _update_plot(self):
 
 
 
-
- # P2
-    # a2 = (crater_outer_edgeN_x - crater_inner_edgeN_x)*range_pixel_size
-    # delta_x = (a2)/(np.sin(incidence_angle_rad))
-    # diameter_crater = (int(crater_inner_edgeS_y) - int(crater_inner_edgeN_y)) * azimuth_pixel_size
-
-
-    # Cx = (delta_ref_x + delta_x) - (diameter_crater/2)
-    # Cy = Ky
-
-    # Dx = (delta_ref_x + delta_x) + (diameter_crater/2)
-    # Dy = Ky
-
-    # <P2
-    # Ux = Cx
-    # a3 = abs(crater_topCone_edgeN_x - crater_inner_edgeN_x)*range_pixel_size
-    # h2 = int(a3/np.cos(incidence_angle_rad))
-    # Uy = Cy - h2
-
-    # Vx = Dx
-    # Vy = Uy
-
-    # # Cone
-
-    # a4 = abs(crater_bottom_edgeN_x - crater_topCone_edgeN_x)*range_pixel_size
-    # h3 = int(a4/np.cos(incidence_angle_rad))
-    # Ey = Uy - h3
-    # diameter_bottom = (int(crater_bottom_edgeS_y) - int(crater_bottom_edgeN_y)) * azimuth_pixel_size
-    # Ex = (delta_ref_x + delta_x) - (diameter_bottom/2)
-    # Fx = (delta_ref_x + delta_x) + (diameter_bottom/2)
-    # Fy = Ey
 
     # Manage grey shape (TO BE REMOVED)
     x = []
@@ -1201,9 +1171,13 @@ def _on_release(event, self):
         # Update profile with color code
         # self.updateProfilePlt()
         # Update ellipse position from profile change
-
         self.updateSARPlot()
-        self.initiateSimAmpliPlot()
+        # Update 3dView if mode auto
+        if self.checkBox_auto_update.isChecked():
+            self.initiateSimAmpliPlot()
+        else:
+            self.pushButton_update_simamp.setChecked(True)
+
 
 def _on_motion(event, self):
     """ callback method for mouse motion event
